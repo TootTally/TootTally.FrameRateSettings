@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using BaboonAPI.Hooks.Initializer;
+using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 using System.IO;
@@ -28,7 +29,12 @@ namespace TootTally.FrameRateSettings
         {
             if (Instance != null) return;
             Instance = this;
+            
+            GameInitializationEvent.Register(Info, TryInitialize);
+        }
 
+        private void TryInitialize()
+        {
             ModuleConfigEnabled = TootTally.Plugin.Instance.Config.Bind("Modules", "Frame Rate Settings", true, "Enable Frame Rate Settings Module");
             OptionalTrombSettings.Add(TootTally.Plugin.Instance.moduleSettings, ModuleConfigEnabled);
             TootTally.Plugin.AddModule(this);
