@@ -46,9 +46,9 @@ namespace TootTally.FrameRateSettings
             ConfigFile config = new ConfigFile(configPath + CONFIG_NAME, true);
             option = new Options()
             {
-                Cap_FPS_In_Menus = config.Bind(CONFIG_FIELD, nameof(option.Cap_FPS_In_Menus), DEFAULT_CAPSETTING),
-                Max_FPS = config.Bind(CONFIG_FIELD, nameof(option.Max_FPS), DEFAULT_FPSSETTING),
-                Unlimited = config.Bind(CONFIG_FIELD, nameof(option.Unlimited), DEFAULT_UNLISETTING),
+                Cap_FPS_In_Menus = config.Bind(CONFIG_FIELD, "Cap FPS In Menus", DEFAULT_CAPSETTING),
+                Max_FPS = config.Bind(CONFIG_FIELD, "Maximum FPS", DEFAULT_FPSSETTING),
+                Unlimited = config.Bind(CONFIG_FIELD, "Unlimited", DEFAULT_UNLISETTING),
             };
 
             var settingsPage = OptionalTrombSettings.GetConfigPage("Frame Rates");
