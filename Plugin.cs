@@ -9,6 +9,7 @@ using UnityEngine;
 namespace TootTally.FrameRateSettings
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
+    [BepInDependency("TootTally", BepInDependency.DependencyFlags.HardDependency)]
     public class Plugin : BaseUnityPlugin, ITootTallyModule
     {
         public static Plugin Instance;
@@ -36,7 +37,7 @@ namespace TootTally.FrameRateSettings
         private void TryInitialize()
         {
             ModuleConfigEnabled = TootTally.Plugin.Instance.Config.Bind("Modules", "Frame Rate Settings", true, "Enable Frame Rate Settings Module");
-            OptionalTrombSettings.Add(TootTally.Plugin.Instance.moduleSettings, ModuleConfigEnabled);
+            if (TootTally.Plugin.Instance.moduleSettings != null) OptionalTrombSettings.Add(TootTally.Plugin.Instance.moduleSettings, ModuleConfigEnabled);
             TootTally.Plugin.AddModule(this);
         }
 
