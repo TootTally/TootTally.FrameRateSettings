@@ -1,6 +1,7 @@
 ﻿using BaboonAPI.Hooks.Initializer;
 using BepInEx;
 using BepInEx.Configuration;
+using BepInEx.Logging;
 using HarmonyLib;
 using System.IO;
 using TootTally.Utils;
@@ -23,6 +24,9 @@ namespace TootTally.FrameRateSettings
         public ConfigEntry<bool> ModuleConfigEnabled { get; set; }
         public bool IsConfigInitialized { get; set; }
         public string Name { get => PluginInfo.PLUGIN_NAME; set => Name = value; }
+
+        public ManualLogSource GetLogger { get => Logger; }
+
         public void LogInfo(string msg) => Logger.LogInfo(msg);
         public void LogError(string msg) => Logger.LogError(msg);
 
