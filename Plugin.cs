@@ -53,6 +53,7 @@ namespace TootTally.FrameRateSettings
             option = new Options()
             {
                 Cap_FPS_In_Menus = config.Bind(CONFIG_FIELD, "Cap FPS In Menus", DEFAULT_CAPSETTING),
+                Max_FPS_In_Menus = config.Bind(CONFIG_FIELD, "Maximum FPS In Menus", DEFAULT_FPSSETTING),
                 Max_FPS = config.Bind(CONFIG_FIELD, "Maximum FPS", DEFAULT_FPSSETTING),
                 Unlimited = config.Bind(CONFIG_FIELD, "Unlimited", DEFAULT_UNLISETTING),
             };
@@ -60,8 +61,8 @@ namespace TootTally.FrameRateSettings
             var settingsPage = TootTallySettingsManager.AddNewPage("Frame Rates", "Frame Rate Settings", 40, new Color(.1f, .1f, .1f, .1f));
             if (settingsPage != null)
             {
-                settingsPage.AddToggle("CapFPSMenuToggle", option.Cap_FPS_In_Menus, (value) => ResolveSlider(settingsPage, "CapFPSMenu", "Max FPS In Menu", value, option.Max_FPS));
-                ResolveSlider(settingsPage, "CapFPSMenu", "Max FPS In Menu", option.Cap_FPS_In_Menus.Value, option.Max_FPS);
+                settingsPage.AddToggle("CapFPSMenuToggle", option.Cap_FPS_In_Menus, (value) => ResolveSlider(settingsPage, "CapFPSMenu", "Max FPS In Menu", value, option.Max_FPS_In_Menus));
+                ResolveSlider(settingsPage, "CapFPSMenu", "Max FPS In Menu", option.Cap_FPS_In_Menus.Value, option.Max_FPS_In_Menus);
                 settingsPage.AddToggle("UnlimitedFPSToggle", option.Unlimited, (value) => ResolveSlider(settingsPage, "MaxFPS", "Max FPS In Game", value, option.Max_FPS));
                 ResolveSlider(settingsPage, "MaxFPS", "Max FPS In Game", option.Unlimited.Value, option.Max_FPS);
             }
@@ -86,61 +87,27 @@ namespace TootTally.FrameRateSettings
 
         public static class FrameRateSettingsPatch
         {
+            #region Menu FPS Cap Patches
             /* Menu frame rate capping patches */
             [HarmonyPatch(typeof(SaveSlotController), nameof(SaveSlotController.Start))]
             [HarmonyPostfix]
-            public static void PatchFPSOnSaveSlotController()
-            {
-                int fpsCap = (int)(Plugin.Instance.option.Unlimited.Value ? -1 : Plugin.Instance.option.Max_FPS.Value);
-                if (Plugin.Instance.option.Cap_FPS_In_Menus.Value)
-                    Application.targetFrameRate = (fpsCap <= 144 && fpsCap > 0) ? fpsCap : 144;
-                else
-                    Application.targetFrameRate = fpsCap;
-            }
+            public static void PatchFPSOnSaveSlotController() => ResolveFPSCap();
 
             [HarmonyPatch(typeof(HomeController), nameof(HomeController.Start))]
             [HarmonyPostfix]
-            public static void PatchFPSOnHomeController()
-            {
-                int fpsCap = (int)(Plugin.Instance.option.Unlimited.Value ? -1 : Plugin.Instance.option.Max_FPS.Value);
-                if (Plugin.Instance.option.Cap_FPS_In_Menus.Value)
-                    Application.targetFrameRate = (fpsCap <= 144 && fpsCap > 0) ? fpsCap : 144;
-                else
-                    Application.targetFrameRate = fpsCap;
-            }
+            public static void PatchFPSOnHomeController() => ResolveFPSCap();
 
             [HarmonyPatch(typeof(HomeController), nameof(HomeController.tryToSaveSettings))]
             [HarmonyPostfix]
-            public static void PatchFPSOnSettingsSave()
-            {
-                int fpsCap = (int)(Plugin.Instance.option.Unlimited.Value ? -1 : Plugin.Instance.option.Max_FPS.Value);
-                if (Plugin.Instance.option.Cap_FPS_In_Menus.Value)
-                    Application.targetFrameRate = (fpsCap <= 144 && fpsCap > 0) ? fpsCap : 144;
-                else
-                    Application.targetFrameRate = fpsCap;
-            }
+            public static void PatchFPSOnSettingsSave() => ResolveFPSCap();
 
             [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.Start))]
             [HarmonyPostfix]
-            public static void PatchFPSOnLevelSelectController()
-            {
-                int fpsCap = (int)(Plugin.Instance.option.Unlimited.Value ? -1 : Plugin.Instance.option.Max_FPS.Value);
-                if (Plugin.Instance.option.Cap_FPS_In_Menus.Value)
-                    Application.targetFrameRate = (fpsCap <= 144 && fpsCap > 0) ? fpsCap : 144;
-                else
-                    Application.targetFrameRate = fpsCap;
-            }
+            public static void PatchFPSOnLevelSelectController() => ResolveFPSCap();
 
             [HarmonyPatch(typeof(PointSceneController), nameof(PointSceneController.Start))]
             [HarmonyPostfix]
-            public static void PatchFPSOnPointSceneController()
-            {
-                int fpsCap = (int)(Plugin.Instance.option.Unlimited.Value ? -1 : Plugin.Instance.option.Max_FPS.Value);
-                if (Plugin.Instance.option.Cap_FPS_In_Menus.Value)
-                    Application.targetFrameRate = (fpsCap <= 144 && fpsCap > 0) ? fpsCap : 144;
-                else
-                    Application.targetFrameRate = fpsCap;
-            }
+            public static void PatchFPSOnPointSceneController() => ResolveFPSCap();
 
             [HarmonyPatch(typeof(GameController), nameof(GameController.Start))]
             [HarmonyPostfix]
@@ -150,6 +117,16 @@ namespace TootTally.FrameRateSettings
                 bool unlimited = Plugin.Instance.option.Unlimited.Value;
                 Application.targetFrameRate = unlimited ? -1 : fpsCap;
             }
+            #endregion
+
+            private static void ResolveFPSCap()
+            {
+                int fpsCap = (int)(Plugin.Instance.option.Unlimited.Value ? -1 : Plugin.Instance.option.Max_FPS.Value);
+                if (Plugin.Instance.option.Cap_FPS_In_Menus.Value)
+                    Application.targetFrameRate = (int)Plugin.Instance.option.Max_FPS_In_Menus.Value;
+                else
+                    Application.targetFrameRate = fpsCap;
+            }
         }
 
         public class Options
@@ -157,6 +134,7 @@ namespace TootTally.FrameRateSettings
             public ConfigEntry<bool> Cap_FPS_In_Menus { get; set; }
             public ConfigEntry<bool> Unlimited { get; set; }
             public ConfigEntry<float> Max_FPS { get; set; }
+            public ConfigEntry<float> Max_FPS_In_Menus { get; set; }
 
         }
     }
