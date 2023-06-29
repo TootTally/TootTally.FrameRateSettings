@@ -64,7 +64,7 @@ namespace TootTally.FrameRateSettings
                 settingsPage.AddToggle("CapFPSMenuToggle", option.Cap_FPS_In_Menus, (value) => ResolveSlider(settingsPage, "CapFPSMenu", "Max FPS In Menu", value, option.Max_FPS_In_Menus));
                 ResolveSlider(settingsPage, "CapFPSMenu", "Max FPS In Menu", option.Cap_FPS_In_Menus.Value, option.Max_FPS_In_Menus);
                 settingsPage.AddToggle("UnlimitedFPSToggle", option.Unlimited, (value) => ResolveSlider(settingsPage, "MaxFPS", "Max FPS In Game", !value, option.Max_FPS));
-                ResolveSlider(settingsPage, "MaxFPS", "Max FPS In Game", option.Unlimited.Value, option.Max_FPS);
+                ResolveSlider(settingsPage, "MaxFPS", "Max FPS In Game", !option.Unlimited.Value, option.Max_FPS);
             }
 
             Harmony.CreateAndPatchAll(typeof(FrameRateSettingsPatch), PluginInfo.PLUGIN_GUID);
