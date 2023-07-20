@@ -26,7 +26,7 @@ namespace TootTally.FrameRateSettings
         public ConfigEntry<bool> ModuleConfigEnabled { get; set; }
         public bool IsConfigInitialized { get; set; }
         public string Name { get => PluginInfo.PLUGIN_NAME; set => Name = value; }
-
+        public static TootTallySettingPage settingPage;
         public ManualLogSource GetLogger { get => Logger; }
 
         public void LogInfo(string msg) => Logger.LogInfo(msg);
@@ -58,13 +58,13 @@ namespace TootTally.FrameRateSettings
                 Unlimited = config.Bind(CONFIG_FIELD, "Unlimited", DEFAULT_UNLISETTING),
             };
 
-            var settingsPage = TootTallySettingsManager.AddNewPage("Frame Rates", "Frame Rate Settings", 40, new Color(.1f, .1f, .1f, .1f));
-            if (settingsPage != null)
+            settingPage = TootTallySettingsManager.AddNewPage("Frame Rates", "Frame Rate Settings", 40, new Color(.1f, .1f, .1f, .1f));
+            if (settingPage != null)
             {
-                settingsPage.AddToggle("CapFPSMenuToggle", option.Cap_FPS_In_Menus, (value) => ResolveSlider(settingsPage, "CapFPSMenu", "Max FPS In Menu", value, option.Max_FPS_In_Menus));
-                ResolveSlider(settingsPage, "CapFPSMenu", "Max FPS In Menu", option.Cap_FPS_In_Menus.Value, option.Max_FPS_In_Menus);
-                settingsPage.AddToggle("UnlimitedFPSToggle", option.Unlimited, (value) => ResolveSlider(settingsPage, "MaxFPS", "Max FPS In Game", !value, option.Max_FPS));
-                ResolveSlider(settingsPage, "MaxFPS", "Max FPS In Game", !option.Unlimited.Value, option.Max_FPS);
+                settingPage.AddToggle("CapFPSMenuToggle", option.Cap_FPS_In_Menus, (value) => ResolveSlider(settingPage, "CapFPSMenu", "Max FPS In Menu", value, option.Max_FPS_In_Menus));
+                ResolveSlider(settingPage, "CapFPSMenu", "Max FPS In Menu", option.Cap_FPS_In_Menus.Value, option.Max_FPS_In_Menus);
+                settingPage.AddToggle("UnlimitedFPSToggle", option.Unlimited, (value) => ResolveSlider(settingPage, "MaxFPS", "Max FPS In Game", !value, option.Max_FPS));
+                ResolveSlider(settingPage, "MaxFPS", "Max FPS In Game", !option.Unlimited.Value, option.Max_FPS);
             }
 
             Harmony.CreateAndPatchAll(typeof(FrameRateSettingsPatch), PluginInfo.PLUGIN_GUID);
@@ -82,6 +82,7 @@ namespace TootTally.FrameRateSettings
         public void UnloadModule()
         {
             Harmony.UnpatchID(PluginInfo.PLUGIN_GUID);
+            settingPage.Remove();
             LogInfo($"Module unloaded!");
         }
 
