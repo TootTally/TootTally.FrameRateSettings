@@ -1,23 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
-		<AssemblyName>TootTally.FrameRateSettings</AssemblyName>
+		<AssemblyName>TootTallyFrameRateSettings</AssemblyName>
 		<Description>Frame Rate Settings Plugin TootTallyModule</Description>
-		<Version>1.0.0</Version>
+		<Version>2.0.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<TromboneChampDir>E:\SteamLibrary\steamapps\common\TromboneChamp</TromboneChampDir>
-		<TromboneTootDir>C:\Users\Sabz\AppData\Roaming\r2modmanPlus-local\TromboneChamp\profiles\Default</TromboneTootDir>
+		<TromboneTootDir>C:\Users\Sabz\AppData\Roaming\r2modmanPlus-local\TromboneChamp\profiles\TTCoreTesting</TromboneTootDir>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="BepInEx.Core" Version="5.*" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
-		<PackageReference Include="UnityEngine.Modules" Version="2019.3.11" IncludeAssets="compile" />
-		<PackageReference Include="TromboneChamp.GameLibs" Version="1.9.5" />
-		<PackageReference Include="TromboneChamp.BaboonAPI" Version="2.2.0" />
+		<PackageReference Include="UnityEngine.Modules" Version="2019.4.40" IncludeAssets="compile" />
+		<PackageReference Include="TromboneChamp.GameLibs" Version="1.17.0-beta" />
+		<PackageReference Include="TromboneChamp.BaboonAPI" Version="2.5.0" />
 		<PackageReference Include="TromboneChamp.TrombLoader" Version="2.0.0-rc.1" />
 	</ItemGroup>
 
@@ -26,8 +26,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="TootTally">
-			<HintPath>$(TromboneTootDir)\BepInEx\plugins\TootTally-TootTally\TootTally.dll</HintPath>
+		<Reference Include="TootTallyCore">
+			<HintPath>$(TromboneTootDir)\BepInEx\plugins\TootTally-Core\TootTallyCore.dll</HintPath>
+		</Reference>
+		<Reference Include="TootTallySettings">
+			<HintPath>$(TromboneTootDir)\BepInEx\plugins\TootTally-Settings\TootTallySettings.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 

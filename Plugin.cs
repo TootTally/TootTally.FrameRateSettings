@@ -3,16 +3,16 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using Newtonsoft.Json.Linq;
 using System.IO;
-using TootTally.Utils;
-using TootTally.Utils.TootTallySettings;
+using TootTallyCore.Utils.TootTallyModules;
+using TootTallySettings;
 using UnityEngine;
 
-namespace TootTally.FrameRateSettings
+namespace TootTallyFrameRateSettings
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-    [BepInDependency("TootTally", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("TootTallyCore", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("TootTallySettings", BepInDependency.DependencyFlags.HardDependency)]
     public class Plugin : BaseUnityPlugin, ITootTallyModule
     {
         public static Plugin Instance;
@@ -27,10 +27,9 @@ namespace TootTally.FrameRateSettings
         public bool IsConfigInitialized { get; set; }
         public string Name { get => PluginInfo.PLUGIN_NAME; set => Name = value; }
         public static TootTallySettingPage settingPage;
-        public ManualLogSource GetLogger { get => Logger; }
 
-        public void LogInfo(string msg) => Logger.LogInfo(msg);
-        public void LogError(string msg) => Logger.LogError(msg);
+        public static void LogInfo(string msg) => Instance.Logger.LogInfo(msg);
+        public static void LogError(string msg) => Instance.Logger.LogError(msg);
 
         private void Awake()
         {
@@ -42,8 +41,8 @@ namespace TootTally.FrameRateSettings
 
         private void TryInitialize()
         {
-            ModuleConfigEnabled = TootTally.Plugin.Instance.Config.Bind("Modules", "Frame Rate Settings", true, "Enable Frame Rate Settings Module");
-            TootTally.Plugin.AddModule(this);
+            ModuleConfigEnabled = TootTallyCore.Plugin.Instance.Config.Bind("Modules", "Frame Rate Settings", true, "Enable Frame Rate Settings Module");
+            TootTallyModuleManager.AddModule(this);
         }
 
         public void LoadModule()
