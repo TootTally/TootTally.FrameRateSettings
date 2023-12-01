@@ -66,6 +66,8 @@ namespace TootTallyFrameRateSettings
                 ResolveSlider(settingPage, "MaxFPS", "Max FPS In Game", !option.Unlimited.Value, option.Max_FPS);
             }
 
+            TootTallySettings.Plugin.TryAddThunderstoreIconToPageButton(Instance.Info.Location, Name, settingPage);
+
             Harmony.CreateAndPatchAll(typeof(FrameRateSettingsPatch), PluginInfo.PLUGIN_GUID);
             LogInfo($"Module loaded!");
         }
